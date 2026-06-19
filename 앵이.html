@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>#CAT</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+body{
+background:#f5f8fa;
+display:flex;
+justify-content:center;
+}
+
+.phone{
+width:100%;
+max-width:500px;
+min-height:100vh;
+background:white;
+}
+
+header{
+position:sticky;
+top:0;
+background:white;
+border-bottom:1px solid #ddd;
+padding:18px;
+font-size:22px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.back{
+font-size:25px;
+cursor:pointer;
+}
+
+.post{
+padding:18px;
+}
+
+.user{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:12px;
+}
+
+.avatar{
+width:46px;
+height:46px;
+border-radius:50%;
+background:#1d9bf0;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:24px;
+}
+
+.name{
+font-weight:bold;
+}
+
+.tag{
+color:#1d9bf0;
+font-size:14px;
+}
+
+#cat{
+width:100%;
+border-radius:18px;
+background:#eee;
+max-height:500px;
+object-fit:cover;
+}
+
+.caption{
+margin-top:12px;
+font-size:18px;
+line-height:1.5;
+}
+
+.actions{
+display:flex;
+justify-content:space-around;
+margin-top:20px;
+color:#666;
+font-size:18px;
+}
+
+button{
+width:calc(100% - 36px);
+margin:20px 18px;
+border:none;
+background:#1d9bf0;
+color:white;
+font-size:18px;
+padding:15px;
+border-radius:999px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1681ca;
+}
+
+.loading{
+width:100%;
+height:300px;
+border-radius:18px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#eee;
+color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<header>
+<span class="back">←</span>
+#CAT
+</header>
+
+<div class="post">
+
+<div class="user">
+<div class="avatar">🐱</div>
+
+<div>
+<div class="name">Cat</div>
+<div class="tag">@cat</div>
+</div>
+
+</div>
+
+<div class="loading" id="loading">
+고양이 찾는 중...
+</div>
+
+<img id="cat" style="display:none;">
+
+<div class="caption" id="caption"></div>
+
+<div class="actions">
+<div>❤️ <span id="likes"></span></div>
+<div>🔁 <span id="retweets"></span></div>
+<div>💬 <span id="comments"></span></div>
+</div>
+
+</div>
+
+<button onclick="loadCat()">
+새 고양이 보기
+</button>
+
+</div>
+
+<script>
+
+const captions=[
+"냐.",
+"오늘도 고양이는 귀엽습니다.",
+"CAT."
+
+];
+
+function rand(min,max){
+return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+async function loadCat(){
+
+document.getElementById("loading").style.display="flex";
+document.getElementById("cat").style.display="none";
+
+try{
+
+const res=await fetch("https://api.thecatapi.com/v1/images/search");
+
+const data=await res.json();
+
+document.getElementById("cat").src=data[0].url;
+
+document.getElementById("cat").onload=()=>{
+
+document.getElementById("loading").style.display="none";
+document.getElementById("cat").style.display="block";
+
+};
+
+document.getElementById("caption").innerText=
+captions[rand(0,captions.length-1)];
+
+document.getElementById("likes").innerText=
+(rand(1000,999)+"."+rand(0,9)+"K");
+
+document.getElementById("retweets").innerText=
+(rand(100,999)+"."+rand(0,9)+"K");
+
+document.getElementById("comments").innerText=
+rand(100,9999);
+
+}catch{
+
+document.getElementById("loading").innerText=
+"고양이를 데려오지 못했습니다 😿";
+
+}
+
+}
+
+loadCat();
+
+</script>
+
+</body>
+</html>
